@@ -46,6 +46,12 @@ public abstract class JavaValue {
         if (Primitives.unwrap(clazz) != clazz) {
             throw new ExecutionException("Cannot call as(Class<T> clazz) with a primitive class");
         }
+        if (value() instanceof Character && clazz == char.class) {
+            return (T) value();
+        }
+        if (value() instanceof Integer && clazz == boolean.class) {
+            return (T) Boolean.valueOf(intValue() != 0 ? true : false);
+        }
         return clazz.cast(value());
     }
 

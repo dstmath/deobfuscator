@@ -198,6 +198,7 @@ public class StringEncryptionTransformer extends Transformer {
                                             Context context = new Context(provider);
                                             context.dictionary = classpath;
                                             context.push(classNode.classNode.name.replace('/', '.'), methodNode.name, classNode.constantPoolSize);
+                                            context.file = deobfuscator.getFile();
                                             Object o = null;
                                             try {
                                                 o = MethodExecutor.execute(classes.get(strCl), decrypterNode, Collections.singletonList(new JavaObject(ldc.cst, "java/lang/String")), null, context);
@@ -248,7 +249,7 @@ public class StringEncryptionTransformer extends Transformer {
                                         MethodInsnNode innerMethod = (MethodInsnNode) innerLdc.getNext();
                                         if (innerLdc.cst instanceof String) {
                                             String strCl = innerMethod.owner;
-                                            if (innerMethod.desc.equals("(Ljava/lang/String;)Ljava/lang/String;")) {
+                                            if (innerMethod.desc.endsWith(")Ljava/lang/String;")) {
                                                 if (enhanced.remove(innerLdc) != null) {
                                                     ClassNode innerClassNode = classes.get(strCl).classNode;
                                                     MethodNode decrypterNode = innerClassNode.methods.stream().filter(mn -> mn.name.equals(innerMethod.name) && mn.desc.equals(innerMethod.desc)).findFirst().orElse(null);
